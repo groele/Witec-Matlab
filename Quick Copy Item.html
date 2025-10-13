@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>可复制条目列表（带自动保存）</title>
+  <style>
+    body{font-family:sans-serif;background:#f5f7fa;margin:0;padding:20px}
+    .card{background:#fff;padding:20px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.1);max-width:700px;margin:auto}
+    h1{margin-top:0}
+    .controls{display:flex;gap:8px;margin-bottom:12px}
+    input,textarea{flex:1;padding:8px;border:1px solid #ddd;border-radius:6px}
+    button{padding:8px 12px;border:0;border-radius:6px;cursor:pointer}
+    .btn{background:#2563eb;color:#fff}
+    .ghost{background:#eee;color:#333}
+    .list{margin-top:12px;display:grid;gap:8px}
+    .row{display:flex;justify-content:space-between;align-items:center;padding:8px;border:1px solid #eee;border-radius:6px;background:#fafafa}
+    .copied{color:green;font-size:12px;margin-left:6px;display:none}
+    .copied.show{display:inline}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>可复制条目列表</h1>
+    <div class="controls">
+      <input id="singleInput" type="text" placeholder="输入条目，回车或点添加"/>
+      <button id="addBtn" class="btn">添加</button>
+      <button id="clearAll" class="ghost">清空</button>
+    </div>
+    <textarea id="bulk" placeholder="粘贴多行条目，每行一个"></textarea>
+    <div style="margin-top:8px;display:flex;gap:8px">
+      <button id="bulkAdd" class="btn">批量添加</button>
+      <button id="copyAll" class="ghost">复制全部</button>
+    </div>
+    <div class="list" id="list"></div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "copyListItems";
+    let items = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+    const list = document.getElementById('list');
+    const singleInput = document.getElementById('singleInput');
+    const addBtn = document.getElementById('addBtn');
+    const bulk = document.getElementById('bulk');
+    const bulkAdd = document.getElementById('bulkAdd');
+    const clearAllBtn = document.getElementById('clearAll');
+    const copyAllBtn = document.getElementById('copyAll');
+
+    function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); }
+    function copyText(text){
+      navigator.clipboard?.writeText(text).catch(()=>{alert("复制失败")});
+    }
+
+    function render(){
+      list.innerHTML = '';
+      if (items.length === 0) {
+        list.innerHTML = '<div>列表为空，快来添加条目吧！</div>';
+        return;
+      }
+      items.forEach((txt, i) => {
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.dataset.index = i;
+        row.innerHTML = `
+          <span>${txt}</span>
+          <div>
+            <button class="ghost copyBtn">复制</button>
+            <button class="ghost delBtn">删除</button>
+            <span class="copied">已复制</span>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function addItem(value) {
+      const v = value.trim();
+      if (!v) return;
+      items.push(v);
+      save();
+      render();
+    }
+
+    // 使用事件委托
+    list.addEventListener('click', (e) => {
+      const target = e.target;
+      if (target.classList.contains('copyBtn')) {
+        const row = target.closest('.row');
+        const index = row.dataset.index;
+        copyText(items[index]);
+        const copied = row.querySelector('.copied');
+        copied.classList.add('show');
+        setTimeout(() => copied.classList.remove('show'), 1000);
+      } else if (target.classList.contains('delBtn')) {
+        const row = target.closest('.row');
+        const index = row.dataset.index;
+        items.splice(index, 1);
+        save();
+        render();
+      }
+    });
+
+    addBtn.addEventListener('click', () => {
+      addItem(singleInput.value);
+      singleInput.value = "";
+    });
+
+    singleInput.addEventListener('keydown', (e) => {
+      if (e.key === "Enter") {
+        addItem(singleInput.value);
+        singleInput.value = "";
+      }
+    });
+
+    bulkAdd.addEventListener('click', () => {
+      const lines = bulk.value.split(/\n/).map(s => s.trim()).filter(Boolean);
+      if (lines.length) {
+        items.push(...lines);
+        bulk.value = "";
+        save();
+        render();
+      }
+    });
+
+    clearAllBtn.addEventListener('click', () => {
+      if (confirm("确认清空？")) {
+        items = [];
+        save();
+        render();
+      }
+    });
+
+    copyAllBtn.addEventListener('click', () => {
+      if (items.length) {
+        copyText(items.join("\n"));
+        alert("已复制全部");
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
