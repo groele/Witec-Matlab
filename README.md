@@ -1,7 +1,3 @@
-好的，明白了。你的项目主要是在原始 [SOFTX-D-20-00088](https://github.com/ElsevierSoftwareX/SOFTX-D-20-00088) 程序基础上，增加了**Excel 数据读出功能**，并包含**朗道 g 因子的计算模块**。下面是一份简洁正式的 README.md 示例（单语英文版，可直接放在 GitHub 项目主页上）：
-
----
-
 # Landé g-Factor Data Reader and Calculator
 
 *(Based on [SOFTX-D-20-00088](https://github.com/ElsevierSoftwareX/SOFTX-D-20-00088))*
