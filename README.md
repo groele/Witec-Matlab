@@ -1,145 +1,201 @@
+<div align="center">
+
 # Witec-Matlab
 
-*(Based on [SOFTX-D-20-00088](https://github.com/ElsevierSoftwareX/SOFTX-D-20-00088))*
+**面向 WITec Raman / PL 光谱数据的 MATLAB 批处理与偏振分析工作流**  
+*MATLAB toolbox for WITec Raman / PL spectroscopy processing, polarization-resolved analysis, batch metrics, and figure-ready export.*
 
-**Version:** v2.0.0
-**Status:** Stable
-**Language:** MATLAB
-**Category:** Scientific Data Processing / Spectroscopy Analysis
+![Type](https://img.shields.io/badge/type-MATLAB%20Toolbox-blue?style=flat-square)
+![Domain](https://img.shields.io/badge/domain-Raman%20%2F%20PL%20spectroscopy-green?style=flat-square)
+![Status](https://img.shields.io/badge/status-stable-purple?style=flat-square)
+![Version](https://img.shields.io/badge/version-v2.0.0-orange?style=flat-square)
+![License](https://img.shields.io/badge/license-academic--use-yellow?style=flat-square)
 
-Witec-Matlab is a MATLAB-based data processing toolbox designed for **WITec Raman / PL spectroscopy data**, with a particular focus on **batch data extraction, polarization-resolved analysis, and parameter calculation** (e.g., spectral dependence and Landé g-factor–related quantities).
-The toolbox is developed as a **research-oriented workflow**, optimized for reproducibility, extensibility, and high-throughput analysis in experimental condensed-matter and optical spectroscopy studies.
+Part of **ResearchFlow Lab** — a local-first research productivity ecosystem for literature, manuscripts, data, and scientific visualization.
 
-This project builds upon and extends the open-source **WITio** framework (Elsevier SoftwareX, SOFTX-D-20-00088), providing higher-level, unified analysis pipelines tailored for practical research use.
+</div>
 
-------
+---
 
-## Key Features
+## 01. Overview
 
-- Unified data extraction and preprocessing for WITec spectroscopy files
-- Polarization-resolved data management and batch processing
-- Modular spectral parameter calculation workflows
-- Flexible Excel merging and data normalization utilities
-- Keyword-based file organization for large experimental datasets
-- Clean, extensible MATLAB script structure suitable for long-term research projects
+**Witec-Matlab** is a MATLAB-based spectroscopy data-processing workflow for WITec Raman / photoluminescence datasets. It focuses on batch extraction, spectrum organization, polarization-resolved analysis, spectral metrics, Excel-ready output, and long-term reproducibility for experimental condensed-matter and optical spectroscopy research.
 
-------
+**Witec-Matlab** 是一个面向 WITec Raman / PL 光谱数据的 MATLAB 分析工具箱，服务于低温光致发光、偏振分辨光谱、磁场依赖光谱、栅压依赖光谱和批量数据导出等实验流程。
 
-## What’s New in v2.0.0
+This project builds upon and extends the open-source **WITio** framework, adding higher-level scripts and unified analysis pipelines tailored for practical research use.
 
-Version **v2.0.0** represents a **major structural refactor** of the toolbox rather than a minor update.
+---
 
-### Highlights
+## 02. Why this project exists
 
-- **Unified pipeline design**: legacy scripts have been consolidated into `_Unified` modules with consistent interfaces
-- **Reduced redundancy**: removed duplicated logic across preprocessing and calculation steps
-- **Improved maintainability**: clearer module boundaries and naming conventions
-- **Better scalability**: designed for batch analysis of large datasets
+Spectroscopy experiments often generate large sets of files across polarization angles, magnetic fields, gate voltages, spatial maps, temperatures, and repeated measurements. Without a consistent pipeline, analysis becomes fragile: file naming is inconsistent, Excel exports are difficult to merge, polarization metrics are recomputed manually, and figure data are hard to reproduce.
 
-### Breaking Changes
+Witec-Matlab provides a structured analysis workflow from raw WITec data to figure-ready tables.
 
-- This version is **not fully backward compatible** with earlier script layouts
-- Script names and calling logic have been updated
-- Users are strongly encouraged to migrate directly to v2.0.0
+核心目标：
 
-------
+- Standardize WITec spectral data import and classification.
+- Support batch processing across many experimental conditions.
+- Provide reusable modules for polarization-resolved PL/Raman analysis.
+- Export clean Excel-ready data for plotting and manuscript figures.
+- Preserve a reproducible analysis path for long-term research projects.
 
-## Repository Structure (v2.0.0)
+---
 
+## 03. Key features
+
+| Module | What it does | 中文说明 |
+|---|---|---|
+| WITec Import | Reads and organizes WITec spectroscopy outputs through WITio-based routines | 基于 WITio 读取并整理 WITec 光谱输出 |
+| Spectrum Classification | Classifies spectra by filename keywords, condition labels, or experiment folders | 按文件名关键词、实验条件和目录结构分类光谱 |
+| Polarization Data Manager | Organizes polarization-resolved datasets for angle-dependent analysis | 管理偏振分辨数据，支持角度依赖分析 |
+| Batch Spectral Analysis | Computes peak positions, intensities, ratios, and other spectral parameters | 批量计算峰位、峰强、比值和光谱参数 |
+| Normalization Tools | Provides reusable normalization and column-splitting utilities | 提供归一化、奇偶列拆分等通用工具 |
+| Excel Merge | Merges processed outputs into clean Excel-ready tables | 将批处理结果合并为可直接绘图的 Excel 表格 |
+| File Organization | Moves or groups files by keywords and experimental conditions | 根据关键词和实验条件整理文件 |
+| Reproducible Workflow | Keeps analysis scripts modular and traceable | 保持脚本模块化和分析过程可追溯 |
+
+---
+
+## 04. Product philosophy
+
+Witec-Matlab follows four design principles:
+
+1. **Data provenance** — raw, intermediate, and exported data should remain traceable.
+2. **Batch first** — analysis should scale from a single spectrum to large experimental folders.
+3. **Figure-ready output** — exported tables should directly support MATLAB, Origin, Python, or manuscript plotting.
+4. **Research-specific metrics** — scripts should encode real spectroscopy workflows, not generic file conversion only.
+
+---
+
+## 05. Architecture
+
+```text
+Raw WITec Data
+    ↓
+WITio-based Import
+    ↓
+Spectrum Export and Classification
+    ↓
+Polarization / Condition Data Manager
+    ↓
+Batch Spectral Analysis
+├── peak position
+├── peak intensity
+├── spectral ratio
+├── polarization metrics
+└── custom experimental parameters
+    ↓
+Post-processing
+├── normalization
+├── odd/even column splitting
+├── keyword-based file grouping
+└── Excel merge
+    ↓
+Figure-ready Tables / Manuscript Data
 ```
-Witec-Matlab/
-│
+
+---
+
+## 06. Quick start
+
+Requirements:
+
+| Requirement | Recommendation |
+|---|---|
+| MATLAB | R2020a or later recommended |
+| WITio | Required for WITec data import |
+| OS | Windows recommended for WITec-origin workflows |
+
+Clone and add to path:
+
+```bash
+git clone https://github.com/groele/Witec-Matlab.git
+```
+
+In MATLAB:
+
+```matlab
+addpath(genpath('path_to/Witec-Matlab'));
+```
+
+Make sure the WITio toolbox is installed and available in the MATLAB path.
+
+---
+
+## 07. Recommended workflow
+
+```text
+Export WITec raw data → Classify spectra by condition
+                      → Build polarization / bias / field data groups
+                      → Run batch spectral metrics
+                      → Normalize and merge Excel outputs
+                      → Plot publication-ready figures
+```
+
+Typical use cases:
+
+- Polarization-resolved PL/Raman analysis.
+- Gate-voltage-dependent exciton/trion spectral tracking.
+- Magnetic-field-dependent Zeeman or g-factor related datasets.
+- Batch export of figure source data.
+- Reorganization of large experimental folders.
+
+---
+
+## 08. Project structure
+
+```text
+Witec-Matlab
 ├── 1. Data extraction and preprocessing/
 │   ├── A1_WITec_Spectrum_Export_and_Classification_Unified.m
 │   ├── A2_PolarDataManager_Unified.m
 │   └── A3_FlexiExcelMerge_Unified.m
-│
 ├── 2. Parameter calculation/
 │   ├── A5_Spectral_Batch_Analysis_Unified.m
 │   ├── B1_FileMoverByKeyword_Unified.m
 │   ├── B2_Normalization.m
 │   └── B3_SplitOddEvenColumns.m
-│
-├── docs/              # Documentation and notes (optional)
-├── examples/          # Example scripts and usage demos (recommended)
+├── docs/
+├── examples/
 └── README.md
 ```
 
-------
+---
 
-## Typical Workflow
+## 09. Roadmap
 
-A standard data-analysis workflow using Witec-Matlab is as follows:
+- [ ] Add documented example datasets
+- [ ] Add standard templates for DOCP, DOLP, and polarization fitting outputs
+- [ ] Add Zeeman / g-factor analysis examples
+- [ ] Add batch plotting templates for manuscript figures
+- [ ] Improve configuration-driven execution
+- [ ] Add optional GUI utilities for batch analysis
+- [ ] Add test datasets for regression checking
 
-1. **Raw data import**
-   Import WITec spectral data using WITio-based routines.
-2. **Spectrum classification & preprocessing**
-   Organize spectra by experimental conditions (e.g., polarization, magnetic field, bias).
-3. **Polarization data management**
-   Extract and manage polarization-resolved datasets using unified data structures.
-4. **Batch spectral analysis**
-   Perform peak extraction, spectral fitting, or parameter calculation across datasets.
-5. **Post-processing & export**
-   Normalize, reorganize, and export results (e.g., Excel-ready tables).
+---
 
-------
+## 10. Privacy and data ownership
 
-## Dependencies
+Witec-Matlab is a local MATLAB workflow. Input data, processed files, and exported tables remain on the user's machine unless manually uploaded elsewhere. Example datasets should be anonymized before public release.
 
-- MATLAB (recommended R2020a or later)
-- **WITio toolbox** (Elsevier SoftwareX, SOFTX-D-20-00088)
+---
 
-Reference repository:
-https://github.com/ElsevierSoftwareX/SOFTX-D-20-00088
+## 11. Related projects
 
-------
+- **ResearchFlow Companion** — research workflow operating system
+- **Scientific Color Lab** — scientific color and visualization workspace
+- **ManuGuide** — Microsoft Word manuscript formatting and style checker
+- **PaperPilot Pro** — academic search and publisher-page enhancement
+- **ClipNote** — browser-native quick notes and Markdown capture
 
-## Installation
+---
 
-1. Clone the repository:
+## 12. License and acknowledgment
 
-   ```bash
-   git clone https://github.com/groele/Witec-Matlab.git
-   ```
+This project builds upon the open-source **WITio** framework. Please refer to the original WITio license for data-import components.
 
-2. Add the project directory to MATLAB path:
+Additional scripts are provided for academic and research use.
 
-   ```matlab
-   addpath(genpath('path_to/Witec-Matlab'));
-   ```
-
-3. Ensure WITio is correctly installed and accessible in MATLAB.
-
-------
-
-## Usage Notes
-
-- Scripts are designed to be **called modularly**, but are most effective when used as a workflow
-- Parameter names and file-naming conventions should be kept consistent across datasets
-- For batch processing, ensure directory structures are well organized before execution
-
-Example usage scripts are recommended to be placed in the `examples/` directory.
-
-------
-
-## Citation & Acknowledgment
-
-If you use this toolbox in academic work, please acknowledge or cite appropriately.
-
-This project is built upon the open-source WITio framework published in *SoftwareX* (Elsevier), and extends it for advanced spectroscopy data analysis workflows.
-
-------
-
-## License
-
-Please refer to the original **WITio license** for data-import components.
-Additional scripts in this repository are provided for academic and research use.
-
-------
-
-## Roadmap
-
-- **v2.1**: Improved documentation and example workflows
-- **v2.2**: Optional GUI utilities for batch analysis
-- **v3.0**: Fully modularized pipeline with configuration-driven execution
-
+Developed by **Shikun Hou / groele**.
